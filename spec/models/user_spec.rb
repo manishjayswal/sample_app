@@ -161,17 +161,14 @@ RSpec.describe User, type: :model do
       end
     end
 
-    # describe "status" do
-    #   let(:unfollowed_post) do
-    #     FactoryBot.create(:micropost, user: FactoryBot.create(:user))
-    #   end
-    #   its(:feed) { should include(newer_micropost) }
-    #   its(:feed) { should include(older_micropost) }
-    #   its(:feed) { should_not include(unfollowed_post) }
-    # end
+    describe "status" do
+      let(:unfollowed_post) do
+        FactoryBot.create(:micropost, user: FactoryBot.create(:user))
+      end
+      
+      it { expect(subject.feed).to include(newer_micropost) }
+      it { expect(subject.feed).to include(older_micropost) }
+      it { expect(subject.feed).not_to include(unfollowed_post) }
+    end
   end
-  # describe "remember token" do
-  #   before { @user.save }
-  #   its(:remember_token) { should_not be_blank }
-  # end
 end
