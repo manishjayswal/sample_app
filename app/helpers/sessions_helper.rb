@@ -15,6 +15,13 @@ module SessionsHelper
       user == current_user
     end
 
+    def logged_in_user
+      unless logged_in?
+        store_location
+        redirect_to login_url, notice: "Please sign in."
+      end
+    end
+
     # Returns the current logged-in user (if any).
   def current_user
     if (user_id = session[:user_id])
