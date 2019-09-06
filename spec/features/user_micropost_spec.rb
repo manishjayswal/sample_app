@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature "UserMicroposts" type: :feature do
+RSpec.feature "UserMicroposts", type: :feature do
     let(:user) { create(:user)}
     let(:micropost) { create(:micropost, user: user) }
     let(:valid_params) { build(:micropost, user: user).attributes }

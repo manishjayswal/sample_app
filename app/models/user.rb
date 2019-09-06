@@ -81,7 +81,7 @@ class User < ApplicationRecord
     reset_sent_at < 2.hours.ago 
   end
 
-  #returns a user's statud feed.
+  #returns a user's status feed.
   def feed
     following_ids = "SELECT followed_id FROM relationships
                      WHERE  follower_id = :user_id"

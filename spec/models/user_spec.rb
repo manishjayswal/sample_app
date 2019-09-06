@@ -9,31 +9,27 @@ RSpec.describe User, type: :model do
   
   subject { @user }
   
-  #it { should respond_to(:name) }
   it { is_expected.to respond_to(:name) }
-  #it { should respond_to(:email) }
   it { is_expected.to respond_to(:email) }
-  #it { should respond_to(:password_digest) }
   it { is_expected.to respond_to(:password_digest) }
-  #it { should respond_to(:password) }
   it { is_expected.to respond_to(:password) }
-  #it { should respond_to(:password_confirmation) }
   it { is_expected.to respond_to(:password_confirmation) }
-  #it { should respond_to(:remember_token) }
   it { is_expected.to respond_to(:remember_token) }
-  #it { should respond_to(:authenticate) }
   it { is_expected.to respond_to(:authenticate) }
-  #it { should respond_to(:admin) }
   it { is_expected.to respond_to(:admin) }
-  #it { should respond_to(:microposts) }
   it { is_expected.to respond_to(:microposts) }
-  #it { should respond_to(:feed) }
   it { is_expected.to respond_to(:feed) }
 
+  it { is_expected.to respond_to(:active_relationships) }
+  it { is_expected.to respond_to(:following) }
+  it { is_expected.to respond_to(:passive_relationships) } 
+  it { is_expected.to respond_to(:followers) }
+  it { is_expected.to respond_to(:following?) }
+  it { is_expected.to respond_to(:follow) }
+  it { is_expected.to respond_to(:unfollow) }
+    
 
-  #it { should be_valid }
   it { is_expected.to be_valid }
-  #it { should_not be_admin }
   it { is_expected.not_to be_admin }
 
   describe "with admin attribute set to 'true'" do
@@ -165,10 +161,44 @@ RSpec.describe User, type: :model do
       let(:unfollowed_post) do
         FactoryBot.create(:micropost, user: FactoryBot.create(:user))
       end
+      let(:followed_user) { FactoryBot.create(:user) }
+
+      before do
+        @user.follow(followed_user)
+        3.times{ followed_user.microposts.create!(content: "Lorem ipsum")}
+      end
       
       it { expect(subject.feed).to include(newer_micropost) }
       it { expect(subject.feed).to include(older_micropost) }
       it { expect(subject.feed).not_to include(unfollowed_post) }
+      # its(:feed) do
+      #   followed_user.microposts.each do |micropost|
+      #     should include(micropost)
+      #   end
+      # end
     end
+  end
+
+  describe "following" do
+    let(:other_user) { FactoryBot.create(:user) }
+    before do
+      @user.save
+      @user.follow(other_user)
+    end
+
+    it { should be_following(other_user) }
+    it { expect(subject.following).to include(other_user) }
+
+    describe  "followed users" do
+      subject { other_user }
+      it { expect(subject.followers).to include(@user) }
+    end
+
+    describe "and unfollowing" do
+      before { @user.unfollow(other_user) }
+
+      it { should_not be_following(other_user) }
+      it { expect(subject.following).not_to include(other_user) }
+    end    
   end
 end
